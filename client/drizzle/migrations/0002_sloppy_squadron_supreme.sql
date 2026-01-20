@@ -1,0 +1,1 @@
+-- provider enum creation moved to 0001_new_mandarin.sql; no-op migration retained for history.

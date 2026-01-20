@@ -8,6 +8,27 @@
       "when": 1768739138449,
       "tag": "0000_early_blindfold",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1768858589090,
+      "tag": "0001_new_mandarin",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1768858918660,
+      "tag": "0002_sloppy_squadron_supreme",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1768859668251,
+      "tag": "0003_fixed_random",
+      "breakpoints": true
     }
   ]
 }
