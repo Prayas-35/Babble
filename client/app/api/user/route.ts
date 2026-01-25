@@ -16,8 +16,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { fullName } = await request.json();
-    const newUser = await db.insert(users).values({ fullName }).returning();
+    const { name, email } = await request.json();
+    const newUser = await db.insert(users).values({ name, email, createdAt: new Date() }).returning();
     return NextResponse.json({ user: newUser });
   } catch (error) {
     console.error("Error in POST /api/user:", error);
