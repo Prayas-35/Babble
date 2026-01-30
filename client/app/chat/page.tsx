@@ -13,7 +13,20 @@ export default function DashboardPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ prompt: 'Say Hello in 3 different languages.' }),
+        body: JSON.stringify({
+          prompt: `Say Hello in 3 different languages. Return ONLY valid JSON.
+                    Do not include explanations or extra text.
+
+                    Format:
+                    {
+                      "languages": [
+                        { "language": "Spanish", "value": "Hola" },
+                        { "language": "French", "value": "Bonjour" },
+                        { "language": "German", "value": "Hallo" }
+                      ]
+                    }
+                  `,
+        }),
       });
 
       const data = await response.json();
