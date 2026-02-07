@@ -1,14 +1,14 @@
-"use server";
+'use server';
 
-import { NextResponse } from "next/server";
-import { withAuth, RequestWithUser } from "@/lib/middleware/auth.middleware";
-import { db } from "@/drizzle/index";
+import { NextResponse } from 'next/server';
+import { withAuth, RequestWithUser } from '@/lib/middleware/auth.middleware';
+import { db } from '@/drizzle/index';
 import {
   collaborationSessions,
   collaborationEntries,
-} from "@/drizzle/schema/collaboration_sessions";
-import { eq } from "drizzle-orm";
-import { StatusCodes } from "http-status-codes";
+} from '@/drizzle/schema/collaboration_sessions';
+import { eq } from 'drizzle-orm';
+import { StatusCodes } from 'http-status-codes';
 
 interface RouteContext {
   params: Promise<{ sessionId: string }>;
@@ -34,16 +34,16 @@ async function postHandler(request: RequestWithUser, context: RouteContext) {
 
     if (!entryType || !content) {
       return NextResponse.json(
-        { error: "entryType and content are required" },
-        { status: StatusCodes.BAD_REQUEST }
+        { error: 'entryType and content are required' },
+        { status: StatusCodes.BAD_REQUEST },
       );
     }
 
-    const validTypes = ["decision", "note", "question", "action_item"];
+    const validTypes = ['decision', 'note', 'question', 'action_item'];
     if (!validTypes.includes(entryType)) {
       return NextResponse.json(
-        { error: `entryType must be one of: ${validTypes.join(", ")}` },
-        { status: StatusCodes.BAD_REQUEST }
+        { error: `entryType must be one of: ${validTypes.join(', ')}` },
+        { status: StatusCodes.BAD_REQUEST },
       );
     }
 
@@ -56,15 +56,15 @@ async function postHandler(request: RequestWithUser, context: RouteContext) {
 
     if (session.length === 0) {
       return NextResponse.json(
-        { error: "Session not found" },
-        { status: StatusCodes.NOT_FOUND }
+        { error: 'Session not found' },
+        { status: StatusCodes.NOT_FOUND },
       );
     }
 
     if (!session[0].isActive) {
       return NextResponse.json(
-        { error: "Session is no longer active" },
-        { status: StatusCodes.CONFLICT }
+        { error: 'Session is no longer active' },
+        { status: StatusCodes.CONFLICT },
       );
     }
 
@@ -83,13 +83,13 @@ async function postHandler(request: RequestWithUser, context: RouteContext) {
     // Update meeting memory by appending to the relevant array
     const memory = (session[0].memory as Record<string, unknown>) || {};
     const memoryKey =
-      entryType === "decision"
-        ? "decisions"
-        : entryType === "question"
-        ? "openQuestions"
-        : entryType === "action_item"
-        ? "actionItems"
-        : "keyPoints";
+      entryType === 'decision'
+        ? 'decisions'
+        : entryType === 'question'
+          ? 'openQuestions'
+          : entryType === 'action_item'
+            ? 'actionItems'
+            : 'keyPoints';
 
     const currentList = (memory[memoryKey] as string[]) || [];
     currentList.push(content);
@@ -104,13 +104,13 @@ async function postHandler(request: RequestWithUser, context: RouteContext) {
 
     return NextResponse.json(
       { entry: newEntry[0] },
-      { status: StatusCodes.CREATED }
+      { status: StatusCodes.CREATED },
     );
   } catch (error) {
-    console.error("Error adding entry:", error);
+    console.error('Error adding entry:', error);
     return NextResponse.json(
-      { error: "Failed to add entry" },
-      { status: StatusCodes.INTERNAL_SERVER_ERROR }
+      { error: 'Failed to add entry' },
+      { status: StatusCodes.INTERNAL_SERVER_ERROR },
     );
   }
 }

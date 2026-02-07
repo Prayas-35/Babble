@@ -1,14 +1,14 @@
-"use server";
+'use server';
 
-import { NextResponse } from "next/server";
-import { withAuth, RequestWithUser } from "@/lib/middleware/auth.middleware";
-import { db } from "@/drizzle/index";
+import { NextResponse } from 'next/server';
+import { withAuth, RequestWithUser } from '@/lib/middleware/auth.middleware';
+import { db } from '@/drizzle/index';
 import {
   collaborationSessions,
   collaborationEntries,
-} from "@/drizzle/schema/collaboration_sessions";
-import { eq, desc } from "drizzle-orm";
-import { StatusCodes } from "http-status-codes";
+} from '@/drizzle/schema/collaboration_sessions';
+import { eq, desc } from 'drizzle-orm';
+import { StatusCodes } from 'http-status-codes';
 
 interface RouteContext {
   params: Promise<{ sessionId: string }>;
@@ -34,8 +34,8 @@ async function getHandler(request: RequestWithUser, context: RouteContext) {
 
     if (session.length === 0) {
       return NextResponse.json(
-        { error: "Session not found" },
-        { status: StatusCodes.NOT_FOUND }
+        { error: 'Session not found' },
+        { status: StatusCodes.NOT_FOUND },
       );
     }
 
@@ -50,10 +50,10 @@ async function getHandler(request: RequestWithUser, context: RouteContext) {
       entries,
     });
   } catch (error) {
-    console.error("Error fetching session:", error);
+    console.error('Error fetching session:', error);
     return NextResponse.json(
-      { error: "Failed to fetch session" },
-      { status: StatusCodes.INTERNAL_SERVER_ERROR }
+      { error: 'Failed to fetch session' },
+      { status: StatusCodes.INTERNAL_SERVER_ERROR },
     );
   }
 }
@@ -89,17 +89,17 @@ async function patchHandler(request: RequestWithUser, context: RouteContext) {
 
     if (updated.length === 0) {
       return NextResponse.json(
-        { error: "Session not found" },
-        { status: StatusCodes.NOT_FOUND }
+        { error: 'Session not found' },
+        { status: StatusCodes.NOT_FOUND },
       );
     }
 
     return NextResponse.json({ session: updated[0] });
   } catch (error) {
-    console.error("Error updating session:", error);
+    console.error('Error updating session:', error);
     return NextResponse.json(
-      { error: "Failed to update session" },
-      { status: StatusCodes.INTERNAL_SERVER_ERROR }
+      { error: 'Failed to update session' },
+      { status: StatusCodes.INTERNAL_SERVER_ERROR },
     );
   }
 }

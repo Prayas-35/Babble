@@ -1,12 +1,12 @@
-"use server";
+'use server';
 
-import { NextResponse } from "next/server";
-import { withAuth, RequestWithUser } from "@/lib/middleware/auth.middleware";
-import { db } from "@/drizzle/index";
-import { collaborationSessions } from "@/drizzle/schema/collaboration_sessions";
-import { conversations } from "@/drizzle/schema/conversations";
-import { eq, and, desc } from "drizzle-orm";
-import { StatusCodes } from "http-status-codes";
+import { NextResponse } from 'next/server';
+import { withAuth, RequestWithUser } from '@/lib/middleware/auth.middleware';
+import { db } from '@/drizzle/index';
+import { collaborationSessions } from '@/drizzle/schema/collaboration_sessions';
+import { conversations } from '@/drizzle/schema/conversations';
+import { eq, and, desc } from 'drizzle-orm';
+import { StatusCodes } from 'http-status-codes';
 
 /**
  * GET /api/inbox/collaborate
@@ -21,7 +21,7 @@ async function getHandler(request: RequestWithUser) {
 
   try {
     const { searchParams } = new URL(request.url);
-    const conversationId = searchParams.get("conversationId");
+    const conversationId = searchParams.get('conversationId');
 
     let results;
     if (conversationId) {
@@ -31,8 +31,8 @@ async function getHandler(request: RequestWithUser) {
         .where(
           and(
             eq(collaborationSessions.conversationId, Number(conversationId)),
-            eq(collaborationSessions.isActive, true)
-          )
+            eq(collaborationSessions.isActive, true),
+          ),
         )
         .orderBy(desc(collaborationSessions.updatedAt));
     } else {
@@ -45,10 +45,10 @@ async function getHandler(request: RequestWithUser) {
 
     return NextResponse.json({ sessions: results });
   } catch (error) {
-    console.error("Error fetching sessions:", error);
+    console.error('Error fetching sessions:', error);
     return NextResponse.json(
-      { error: "Failed to fetch collaboration sessions" },
-      { status: StatusCodes.INTERNAL_SERVER_ERROR }
+      { error: 'Failed to fetch collaboration sessions' },
+      { status: StatusCodes.INTERNAL_SERVER_ERROR },
     );
   }
 }
@@ -70,8 +70,8 @@ async function postHandler(request: RequestWithUser) {
 
     if (!conversationId) {
       return NextResponse.json(
-        { error: "conversationId is required" },
-        { status: StatusCodes.BAD_REQUEST }
+        { error: 'conversationId is required' },
+        { status: StatusCodes.BAD_REQUEST },
       );
     }
 
@@ -84,8 +84,8 @@ async function postHandler(request: RequestWithUser) {
 
     if (conv.length === 0) {
       return NextResponse.json(
-        { error: "Conversation not found" },
-        { status: StatusCodes.NOT_FOUND }
+        { error: 'Conversation not found' },
+        { status: StatusCodes.NOT_FOUND },
       );
     }
 
@@ -96,8 +96,8 @@ async function postHandler(request: RequestWithUser) {
       .where(
         and(
           eq(collaborationSessions.conversationId, Number(conversationId)),
-          eq(collaborationSessions.isActive, true)
-        )
+          eq(collaborationSessions.isActive, true),
+        ),
       )
       .limit(1);
 
@@ -126,13 +126,13 @@ async function postHandler(request: RequestWithUser) {
 
     return NextResponse.json(
       { session: newSession[0] },
-      { status: StatusCodes.CREATED }
+      { status: StatusCodes.CREATED },
     );
   } catch (error) {
-    console.error("Error creating session:", error);
+    console.error('Error creating session:', error);
     return NextResponse.json(
-      { error: "Failed to create collaboration session" },
-      { status: StatusCodes.INTERNAL_SERVER_ERROR }
+      { error: 'Failed to create collaboration session' },
+      { status: StatusCodes.INTERNAL_SERVER_ERROR },
     );
   }
 }

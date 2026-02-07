@@ -1,11 +1,11 @@
-"use server";
+'use server';
 
-import { NextResponse } from "next/server";
-import { withAuth, RequestWithUser } from "@/lib/middleware/auth.middleware";
-import { db } from "@/drizzle/index";
-import { conversations } from "@/drizzle/schema/conversations";
-import { eq, and, desc } from "drizzle-orm";
-import { StatusCodes } from "http-status-codes";
+import { NextResponse } from 'next/server';
+import { withAuth, RequestWithUser } from '@/lib/middleware/auth.middleware';
+import { db } from '@/drizzle/index';
+import { conversations } from '@/drizzle/schema/conversations';
+import { eq, and, desc } from 'drizzle-orm';
+import { StatusCodes } from 'http-status-codes';
 
 /**
  * GET /api/inbox/conversations
@@ -22,31 +22,40 @@ async function getHandler(request: RequestWithUser) {
 
   try {
     const { searchParams } = new URL(request.url);
-    const organizationId = searchParams.get("organizationId");
+    const organizationId = searchParams.get('organizationId');
 
     if (!organizationId) {
       return NextResponse.json(
-        { error: "organizationId is required" },
-        { status: StatusCodes.BAD_REQUEST }
+        { error: 'organizationId is required' },
+        { status: StatusCodes.BAD_REQUEST },
       );
     }
 
     const filters = [eq(conversations.organizationId, Number(organizationId))];
 
-    const status = searchParams.get("status");
+    const status = searchParams.get('status');
     if (status) {
       filters.push(
-        eq(conversations.status, status as "open" | "closed" | "snoozed" | "archived")
+        eq(
+          conversations.status,
+          status as 'open' | 'closed' | 'snoozed' | 'archived',
+        ),
       );
     }
 
-    const channel = searchParams.get("channel");
+    const channel = searchParams.get('channel');
     if (channel) {
       filters.push(
         eq(
           conversations.channel,
-          channel as "email" | "sms" | "whatsapp" | "slack" | "web_chat" | "internal_note"
-        )
+          channel as
+            | 'email'
+            | 'sms'
+            | 'whatsapp'
+            | 'slack'
+            | 'web_chat'
+            | 'internal_note',
+        ),
       );
     }
 
@@ -58,10 +67,10 @@ async function getHandler(request: RequestWithUser) {
 
     return NextResponse.json({ conversations: results });
   } catch (error) {
-    console.error("Error fetching conversations:", error);
+    console.error('Error fetching conversations:', error);
     return NextResponse.json(
-      { error: "Failed to fetch conversations" },
-      { status: StatusCodes.INTERNAL_SERVER_ERROR }
+      { error: 'Failed to fetch conversations' },
+      { status: StatusCodes.INTERNAL_SERVER_ERROR },
     );
   }
 }
@@ -84,20 +93,38 @@ async function postHandler(request: RequestWithUser) {
 
   try {
     const body = await request.json();
-    const { organizationId, channel, contactIdentifier, subject, contactName, assignedTo } = body;
+    const {
+      organizationId,
+      channel,
+      contactIdentifier,
+      subject,
+      contactName,
+      assignedTo,
+    } = body;
 
     if (!organizationId || !channel || !contactIdentifier) {
       return NextResponse.json(
-        { error: "organizationId, channel, and contactIdentifier are required" },
-        { status: StatusCodes.BAD_REQUEST }
+        {
+          error: 'organizationId, channel, and contactIdentifier are required',
+        },
+        { status: StatusCodes.BAD_REQUEST },
       );
     }
 
-    const validChannels = ["email", "sms", "whatsapp", "slack", "web_chat", "internal_note"];
+    const validChannels = [
+      'email',
+      'sms',
+      'whatsapp',
+      'slack',
+      'web_chat',
+      'internal_note',
+    ];
     if (!validChannels.includes(channel)) {
       return NextResponse.json(
-        { error: `Invalid channel. Must be one of: ${validChannels.join(", ")}` },
-        { status: StatusCodes.BAD_REQUEST }
+        {
+          error: `Invalid channel. Must be one of: ${validChannels.join(', ')}`,
+        },
+        { status: StatusCodes.BAD_REQUEST },
       );
     }
 
@@ -115,13 +142,13 @@ async function postHandler(request: RequestWithUser) {
 
     return NextResponse.json(
       { conversation: newConversation[0] },
-      { status: StatusCodes.CREATED }
+      { status: StatusCodes.CREATED },
     );
   } catch (error) {
-    console.error("Error creating conversation:", error);
+    console.error('Error creating conversation:', error);
     return NextResponse.json(
-      { error: "Failed to create conversation" },
-      { status: StatusCodes.INTERNAL_SERVER_ERROR }
+      { error: 'Failed to create conversation' },
+      { status: StatusCodes.INTERNAL_SERVER_ERROR },
     );
   }
 }

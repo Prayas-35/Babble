@@ -1,14 +1,14 @@
-"use server";
+'use server';
 
-import { NextResponse } from "next/server";
-import { withAuth, RequestWithUser } from "@/lib/middleware/auth.middleware";
-import { db } from "@/drizzle/index";
-import { conversations } from "@/drizzle/schema/conversations";
-import { messages } from "@/drizzle/schema/messages";
-import { eq, desc } from "drizzle-orm";
-import { generate } from "@/utils/generate";
-import { parseUntilJson } from "@/utils/parse_until_json";
-import { StatusCodes } from "http-status-codes";
+import { NextResponse } from 'next/server';
+import { withAuth, RequestWithUser } from '@/lib/middleware/auth.middleware';
+import { db } from '@/drizzle/index';
+import { conversations } from '@/drizzle/schema/conversations';
+import { messages } from '@/drizzle/schema/messages';
+import { eq, desc } from 'drizzle-orm';
+import { generate } from '@/utils/generate';
+import { parseUntilJson } from '@/utils/parse_until_json';
+import { StatusCodes } from 'http-status-codes';
 
 // ────────────────────────────────────────────────────────────────
 // System Prompt
@@ -58,8 +58,8 @@ async function postHandler(request: RequestWithUser) {
 
     if (!conversationId) {
       return NextResponse.json(
-        { error: "conversationId is required" },
-        { status: StatusCodes.BAD_REQUEST }
+        { error: 'conversationId is required' },
+        { status: StatusCodes.BAD_REQUEST },
       );
     }
 
@@ -72,8 +72,8 @@ async function postHandler(request: RequestWithUser) {
 
     if (conv.length === 0) {
       return NextResponse.json(
-        { error: "Conversation not found" },
-        { status: StatusCodes.NOT_FOUND }
+        { error: 'Conversation not found' },
+        { status: StatusCodes.NOT_FOUND },
       );
     }
 
@@ -88,10 +88,10 @@ async function postHandler(request: RequestWithUser) {
     if (msgs.length === 0) {
       return NextResponse.json({
         snapshot: {
-          currentGoal: "No messages in this conversation yet.",
+          currentGoal: 'No messages in this conversation yet.',
           decisionsMade: [],
           openQuestions: [],
-          suggestedNextStep: "Wait for the first message.",
+          suggestedNextStep: 'Wait for the first message.',
           unresolvedIssues: [],
           participantSummary: [],
         },
@@ -115,7 +115,7 @@ async function postHandler(request: RequestWithUser) {
     const prompt = `Generate a live snapshot for this conversation.
 
 CONVERSATION:
-- Subject: ${conversation.subject || "(no subject)"}
+- Subject: ${conversation.subject || '(no subject)'}
 - Channel: ${conversation.channel}
 - Contact: ${conversation.contactName || conversation.contactIdentifier}
 - Status: ${conversation.status}
@@ -126,7 +126,7 @@ ${JSON.stringify(messageData, null, 2)}`;
     const snapshotRaw = await generate(prompt, LIVE_SNAPSHOT_SYSTEM_PROMPT, {
       temperature: 0.2,
       maxTokens: 1024,
-      responseFormat: { type: "json_object" },
+      responseFormat: { type: 'json_object' },
     });
 
     const snapshot = parseUntilJson(snapshotRaw);
@@ -140,10 +140,13 @@ ${JSON.stringify(messageData, null, 2)}`;
       },
     });
   } catch (error) {
-    console.error("Error generating live snapshot:", error);
+    console.error('Error generating live snapshot:', error);
     return NextResponse.json(
-      { error: "Failed to generate live snapshot", details: (error as Error).message },
-      { status: StatusCodes.INTERNAL_SERVER_ERROR }
+      {
+        error: 'Failed to generate live snapshot',
+        details: (error as Error).message,
+      },
+      { status: StatusCodes.INTERNAL_SERVER_ERROR },
     );
   }
 }

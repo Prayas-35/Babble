@@ -77,27 +77,27 @@ export interface ConversationInsightsData {
 }
 
 export const ACTION_TYPE_LABELS: Record<string, string> = {
-  send_followup: "Send Follow-up",
-  create_task: "Create Task",
-  assign_task: "Assign Task",
-  schedule_reminder: "Schedule Reminder",
-  escalate: "Escalate",
-  draft_reply: "Draft Reply",
-  broadcast: "Broadcast",
+  send_followup: 'Send Follow-up',
+  create_task: 'Create Task',
+  assign_task: 'Assign Task',
+  schedule_reminder: 'Schedule Reminder',
+  escalate: 'Escalate',
+  draft_reply: 'Draft Reply',
+  broadcast: 'Broadcast',
 };
 
 export const PRIORITY_COLORS: Record<string, string> = {
-  low: "bg-slate-500/20 text-slate-400",
-  medium: "bg-blue-500/20 text-blue-400",
-  high: "bg-orange-500/20 text-orange-400",
-  urgent: "bg-red-500/20 text-red-400",
+  low: 'bg-slate-500/20 text-slate-400',
+  medium: 'bg-blue-500/20 text-blue-400',
+  high: 'bg-orange-500/20 text-orange-400',
+  urgent: 'bg-red-500/20 text-red-400',
 };
 
 export const CHANNEL_LABELS: Record<string, string> = {
-  email: "Email",
-  sms: "SMS",
-  whatsapp: "WhatsApp",
-  slack: "Slack",
-  web_chat: "Web Chat",
-  internal_note: "Note",
+  email: 'Email',
+  sms: 'SMS',
+  whatsapp: 'WhatsApp',
+  slack: 'Slack',
+  web_chat: 'Web Chat',
+  internal_note: 'Note',
 };

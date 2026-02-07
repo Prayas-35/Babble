@@ -1,11 +1,11 @@
-"use server";
+'use server';
 
-import { NextResponse } from "next/server";
-import { withAuth, RequestWithUser } from "@/lib/middleware/auth.middleware";
-import { db } from "@/drizzle/index";
-import { organizations } from "@/drizzle/schema/organizations";
-import { eq } from "drizzle-orm";
-import { StatusCodes } from "http-status-codes";
+import { NextResponse } from 'next/server';
+import { withAuth, RequestWithUser } from '@/lib/middleware/auth.middleware';
+import { db } from '@/drizzle/index';
+import { organizations } from '@/drizzle/schema/organizations';
+import { eq } from 'drizzle-orm';
+import { StatusCodes } from 'http-status-codes';
 
 /**
  * POST /api/user/ensure-org
@@ -31,13 +31,13 @@ async function handler(request: RequestWithUser) {
     }
 
     // Auto-create a default organization
-    const userEmail = user.email || "user";
-    const orgName = `${userEmail.split("@")[0]}'s Workspace`;
+    const userEmail = user.email || 'user';
+    const orgName = `${userEmail.split('@')[0]}'s Workspace`;
     const orgSlug = userEmail
-      .split("@")[0]
+      .split('@')[0]
       .toLowerCase()
-      .replace(/[^a-z0-9]/g, "-")
-      .replace(/-+/g, "-");
+      .replace(/[^a-z0-9]/g, '-')
+      .replace(/-+/g, '-');
 
     const [newOrg] = await db
       .insert(organizations)
@@ -49,10 +49,10 @@ async function handler(request: RequestWithUser) {
 
     return NextResponse.json({ organization: newOrg });
   } catch (error) {
-    console.error("Error ensuring organization:", error);
+    console.error('Error ensuring organization:', error);
     return NextResponse.json(
-      { error: "Failed to ensure organization" },
-      { status: StatusCodes.INTERNAL_SERVER_ERROR }
+      { error: 'Failed to ensure organization' },
+      { status: StatusCodes.INTERNAL_SERVER_ERROR },
     );
   }
 }

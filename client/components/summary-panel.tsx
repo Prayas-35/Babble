@@ -32,8 +32,15 @@ export function SummaryPanel({ summary, loading, onClose }: SummaryPanelProps) {
     return (
       <div className="w-96 bg-card border-l border-border flex flex-col">
         <div className="p-4 border-b border-border flex items-center justify-between">
-          <h3 className="font-semibold text-foreground text-sm">Inbox Summary</h3>
-          <Button variant="ghost" size="icon" onClick={onClose} className="h-7 w-7">
+          <h3 className="font-semibold text-foreground text-sm">
+            Inbox Summary
+          </h3>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="h-7 w-7"
+          >
             <X className="w-4 h-4" />
           </Button>
         </div>
@@ -54,7 +61,12 @@ export function SummaryPanel({ summary, loading, onClose }: SummaryPanelProps) {
       {/* Header */}
       <div className="p-4 border-b border-border flex items-center justify-between">
         <h3 className="font-semibold text-foreground text-sm">Inbox Summary</h3>
-        <Button variant="ghost" size="icon" onClick={onClose} className="h-7 w-7">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onClose}
+          className="h-7 w-7"
+        >
           <X className="w-4 h-4" />
         </Button>
       </div>

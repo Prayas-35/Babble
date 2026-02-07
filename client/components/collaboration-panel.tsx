@@ -108,7 +108,9 @@ export function CollaborationPanel({
 
   // Streaming state
   const [isStreaming, setIsStreaming] = useState(false);
-  const [latestSnapshot, setLatestSnapshot] = useState<LiveSnapshotData | null>(null);
+  const [latestSnapshot, setLatestSnapshot] = useState<LiveSnapshotData | null>(
+    null,
+  );
   const [snapshotMeta, setSnapshotMeta] = useState<{
     totalSnapshots: number;
     generatedAt: string;
@@ -242,7 +244,7 @@ export function CollaborationPanel({
               Accept: 'text/event-stream',
             },
             signal: controller.signal,
-          }
+          },
         );
 
         if (!response.ok || !response.body) {
@@ -308,7 +310,7 @@ export function CollaborationPanel({
         case 'snapshot':
           setLatestSnapshot(data.snapshot as LiveSnapshotData);
           setSnapshotMeta(
-            data.metadata as { totalSnapshots: number; generatedAt: string }
+            data.metadata as { totalSnapshots: number; generatedAt: string },
           );
           // Refresh entries to include the ai_snapshot entry
           fetchEntries();
@@ -332,7 +334,7 @@ export function CollaborationPanel({
           break;
       }
     },
-    [fetchEntries]
+    [fetchEntries],
   );
 
   // ── Auto-start session when conversation selected ─────────
@@ -344,7 +346,7 @@ export function CollaborationPanel({
         try {
           const res = await fetch(
             `/api/inbox/collaborate?conversationId=${conversationId}`,
-            { headers: authHeaders() }
+            { headers: authHeaders() },
           );
           if (res.ok) {
             const data = await res.json();
@@ -404,7 +406,12 @@ export function CollaborationPanel({
             <Radio className="w-3.5 h-3.5" />
             Live Collaboration
           </h3>
-          <Button variant="ghost" size="icon" onClick={onClose} className="h-6 w-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="h-6 w-6"
+          >
             <X className="w-3.5 h-3.5" />
           </Button>
         </div>
@@ -426,7 +433,12 @@ export function CollaborationPanel({
             <Radio className="w-3.5 h-3.5" />
             Live Collaboration
           </h3>
-          <Button variant="ghost" size="icon" onClick={onClose} className="h-6 w-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="h-6 w-6"
+          >
             <X className="w-3.5 h-3.5" />
           </Button>
         </div>
@@ -446,7 +458,12 @@ export function CollaborationPanel({
             <Radio className="w-3.5 h-3.5" />
             Live Collaboration
           </h3>
-          <Button variant="ghost" size="icon" onClick={onClose} className="h-6 w-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="h-6 w-6"
+          >
             <X className="w-3.5 h-3.5" />
           </Button>
         </div>
@@ -552,7 +569,12 @@ export function CollaborationPanel({
           >
             End
           </Button>
-          <Button variant="ghost" size="icon" onClick={onClose} className="h-6 w-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="h-6 w-6"
+          >
             <X className="w-3.5 h-3.5" />
           </Button>
         </div>
@@ -644,7 +666,9 @@ export function CollaborationPanel({
                   </p>
                   {latestSnapshot.participantSummary.map((p, i) => (
                     <p key={i} className="text-[11px] text-muted-foreground">
-                      <span className="text-foreground font-medium">{p.name}</span>
+                      <span className="text-foreground font-medium">
+                        {p.name}
+                      </span>
                       : {p.lastAction}
                     </p>
                   ))}
@@ -745,14 +769,19 @@ export function CollaborationPanel({
                     key={entry.id}
                     className={cn(
                       'flex items-start gap-2 p-2 rounded-md border',
-                      config.bgColor
+                      config.bgColor,
                     )}
                   >
-                    <Icon className={cn('w-3 h-3 mt-0.5 shrink-0', config.color)} />
+                    <Icon
+                      className={cn('w-3 h-3 mt-0.5 shrink-0', config.color)}
+                    />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
                         <p
-                          className={cn('text-[9px] font-semibold uppercase', config.color)}
+                          className={cn(
+                            'text-[9px] font-semibold uppercase',
+                            config.color,
+                          )}
                         >
                           {config.label}
                         </p>
@@ -797,7 +826,7 @@ export function CollaborationPanel({
                   'flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-medium transition-colors border',
                   newEntryType === type
                     ? config.bgColor + ' ' + config.color
-                    : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                    : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50',
                 )}
               >
                 <Icon className="w-3 h-3" />

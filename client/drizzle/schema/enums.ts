@@ -1,4 +1,4 @@
-import { pgEnum } from "drizzle-orm/pg-core";
+import { pgEnum } from 'drizzle-orm/pg-core';
 
 export const providerEnum = pgEnum('provider', ['google', 'outlook', 'slack']);
 
@@ -56,8 +56,4 @@ export const summaryTypeEnum = pgEnum('summary_type', [
   'conversation_summary',
 ]);
 
-export const teamRoleEnum = pgEnum('team_role', [
-  'admin',
-  'member',
-  'viewer',
-]);
+export const teamRoleEnum = pgEnum('team_role', ['admin', 'member', 'viewer']);

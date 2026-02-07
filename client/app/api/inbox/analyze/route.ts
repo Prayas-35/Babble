@@ -1,14 +1,14 @@
-"use server";
+'use server';
 
-import { NextResponse } from "next/server";
-import { withAuth, RequestWithUser } from "@/lib/middleware/auth.middleware";
-import { db } from "@/drizzle/index";
-import { conversations } from "@/drizzle/schema/conversations";
-import { messages } from "@/drizzle/schema/messages";
-import { eq, desc } from "drizzle-orm";
-import { generate } from "@/utils/generate";
-import { parseUntilJson } from "@/utils/parse_until_json";
-import { StatusCodes } from "http-status-codes";
+import { NextResponse } from 'next/server';
+import { withAuth, RequestWithUser } from '@/lib/middleware/auth.middleware';
+import { db } from '@/drizzle/index';
+import { conversations } from '@/drizzle/schema/conversations';
+import { messages } from '@/drizzle/schema/messages';
+import { eq, desc } from 'drizzle-orm';
+import { generate } from '@/utils/generate';
+import { parseUntilJson } from '@/utils/parse_until_json';
+import { StatusCodes } from 'http-status-codes';
 
 // ────────────────────────────────────────────────────────────────
 // System Prompts
@@ -98,8 +98,8 @@ async function postHandler(request: RequestWithUser) {
 
     if (!organizationId) {
       return NextResponse.json(
-        { error: "organizationId is required" },
-        { status: StatusCodes.BAD_REQUEST }
+        { error: 'organizationId is required' },
+        { status: StatusCodes.BAD_REQUEST },
       );
     }
 
@@ -178,7 +178,7 @@ ${JSON.stringify(conversationData, null, 2)}`;
     const summaryRaw = await generate(summaryPrompt, SUMMARY_SYSTEM_PROMPT, {
       temperature: 0.2,
       maxTokens: 2048,
-      responseFormat: { type: "json_object" },
+      responseFormat: { type: 'json_object' },
     });
 
     const summary = parseUntilJson(summaryRaw);
@@ -196,7 +196,7 @@ ${JSON.stringify(conversationData, null, 2)}`;
     const actionsRaw = await generate(actionsPrompt, ACTIONS_SYSTEM_PROMPT, {
       temperature: 0.3,
       maxTokens: 1536,
-      responseFormat: { type: "json_object" },
+      responseFormat: { type: 'json_object' },
     });
 
     const actions = parseUntilJson(actionsRaw);
@@ -212,10 +212,10 @@ ${JSON.stringify(conversationData, null, 2)}`;
       },
     });
   } catch (error) {
-    console.error("Error analyzing inbox:", error);
+    console.error('Error analyzing inbox:', error);
     return NextResponse.json(
-      { error: "Failed to analyze inbox", details: (error as Error).message },
-      { status: StatusCodes.INTERNAL_SERVER_ERROR }
+      { error: 'Failed to analyze inbox', details: (error as Error).message },
+      { status: StatusCodes.INTERNAL_SERVER_ERROR },
     );
   }
 }

@@ -1,14 +1,14 @@
-"use server";
+'use server';
 
-import { NextResponse } from "next/server";
-import { withAuth, RequestWithUser } from "@/lib/middleware/auth.middleware";
-import { db } from "@/drizzle/index";
-import { conversations } from "@/drizzle/schema/conversations";
-import { messages } from "@/drizzle/schema/messages";
-import { eq, desc } from "drizzle-orm";
-import { generate } from "@/utils/generate";
-import { parseUntilJson } from "@/utils/parse_until_json";
-import { StatusCodes } from "http-status-codes";
+import { NextResponse } from 'next/server';
+import { withAuth, RequestWithUser } from '@/lib/middleware/auth.middleware';
+import { db } from '@/drizzle/index';
+import { conversations } from '@/drizzle/schema/conversations';
+import { messages } from '@/drizzle/schema/messages';
+import { eq, desc } from 'drizzle-orm';
+import { generate } from '@/utils/generate';
+import { parseUntilJson } from '@/utils/parse_until_json';
+import { StatusCodes } from 'http-status-codes';
 
 // ────────────────────────────────────────────────────────────────
 // System prompt — lightweight per-conversation summary
@@ -54,8 +54,8 @@ async function postHandler(request: RequestWithUser) {
 
     if (!conversationId) {
       return NextResponse.json(
-        { error: "conversationId is required" },
-        { status: StatusCodes.BAD_REQUEST }
+        { error: 'conversationId is required' },
+        { status: StatusCodes.BAD_REQUEST },
       );
     }
 
@@ -68,8 +68,8 @@ async function postHandler(request: RequestWithUser) {
 
     if (!conv) {
       return NextResponse.json(
-        { error: "Conversation not found" },
-        { status: StatusCodes.NOT_FOUND }
+        { error: 'Conversation not found' },
+        { status: StatusCodes.NOT_FOUND },
       );
     }
 
@@ -84,8 +84,8 @@ async function postHandler(request: RequestWithUser) {
     if (msgs.length === 0) {
       return NextResponse.json({
         insights: {
-          summary: "No messages in this conversation yet.",
-          sentiment: "neutral",
+          summary: 'No messages in this conversation yet.',
+          sentiment: 'neutral',
           keyPoints: [],
           nextSteps: [],
           pendingQuestions: [],
@@ -112,7 +112,7 @@ async function postHandler(request: RequestWithUser) {
     const prompt = `Analyze this conversation and produce a summary with next steps.
 
 CONVERSATION:
-Subject: ${conv.subject || "(no subject)"}
+Subject: ${conv.subject || '(no subject)'}
 Contact: ${conv.contactName || conv.contactIdentifier}
 Channel: ${conv.channel}
 Status: ${conv.status}
@@ -122,17 +122,20 @@ ${JSON.stringify(conversationData.messages, null, 2)}`;
     const raw = await generate(prompt, CONVERSATION_SUMMARY_PROMPT, {
       temperature: 0.2,
       maxTokens: 1024,
-      responseFormat: { type: "json_object" },
+      responseFormat: { type: 'json_object' },
     });
 
     const insights = parseUntilJson(raw);
 
     return NextResponse.json({ insights });
   } catch (error) {
-    console.error("Error summarizing conversation:", error);
+    console.error('Error summarizing conversation:', error);
     return NextResponse.json(
-      { error: "Failed to summarize conversation", details: (error as Error).message },
-      { status: StatusCodes.INTERNAL_SERVER_ERROR }
+      {
+        error: 'Failed to summarize conversation',
+        details: (error as Error).message,
+      },
+      { status: StatusCodes.INTERNAL_SERVER_ERROR },
     );
   }
 }

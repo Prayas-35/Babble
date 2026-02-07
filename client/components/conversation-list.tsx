@@ -66,7 +66,7 @@ export function ConversationList({
         (c) =>
           c.subject?.toLowerCase().includes(q) ||
           c.contactName?.toLowerCase().includes(q) ||
-          c.contactIdentifier.toLowerCase().includes(q)
+          c.contactIdentifier.toLowerCase().includes(q),
       );
     }
     if (filterUnread) {
@@ -117,14 +117,17 @@ export function ConversationList({
             onClick={() => onSelect(conversation)}
             className={cn(
               'w-full px-4 py-3 border-b border-border hover:bg-secondary transition-colors text-left',
-              selectedId === conversation.id && 'bg-secondary/60'
+              selectedId === conversation.id && 'bg-secondary/60',
             )}
           >
             <div className="flex items-start gap-3">
               {/* Avatar */}
               <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-0.5">
                 <span className="text-xs font-semibold text-primary">
-                  {getInitials(conversation.contactName, conversation.contactIdentifier)}
+                  {getInitials(
+                    conversation.contactName,
+                    conversation.contactIdentifier,
+                  )}
                 </span>
               </div>
 
@@ -136,7 +139,7 @@ export function ConversationList({
                       'text-sm truncate',
                       conversation.status === 'open'
                         ? 'font-semibold text-foreground'
-                        : 'font-medium text-foreground'
+                        : 'font-medium text-foreground',
                     )}
                   >
                     {conversation.contactName || conversation.contactIdentifier}
@@ -150,7 +153,8 @@ export function ConversationList({
                 </p>
                 <div className="flex items-center gap-1.5">
                   <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary text-muted-foreground">
-                    {CHANNEL_LABELS_MAP[conversation.channel] || conversation.channel}
+                    {CHANNEL_LABELS_MAP[conversation.channel] ||
+                      conversation.channel}
                   </span>
                   <span
                     className={cn(
@@ -158,8 +162,8 @@ export function ConversationList({
                       conversation.status === 'open'
                         ? 'bg-green-500/20 text-green-400'
                         : conversation.status === 'snoozed'
-                        ? 'bg-yellow-500/20 text-yellow-400'
-                        : 'bg-secondary text-muted-foreground'
+                          ? 'bg-yellow-500/20 text-yellow-400'
+                          : 'bg-secondary text-muted-foreground',
                     )}
                   >
                     {conversation.status}

@@ -1,13 +1,13 @@
-"use server";
+'use server';
 
-import { NextResponse } from "next/server";
-import { withAuth, RequestWithUser } from "@/lib/middleware/auth.middleware";
-import { db } from "@/drizzle/index";
-import { conversations } from "@/drizzle/schema/conversations";
-import { messages } from "@/drizzle/schema/messages";
-import { providerAccounts } from "@/drizzle/schema/provider_acounts";
-import { eq, and } from "drizzle-orm";
-import { StatusCodes } from "http-status-codes";
+import { NextResponse } from 'next/server';
+import { withAuth, RequestWithUser } from '@/lib/middleware/auth.middleware';
+import { db } from '@/drizzle/index';
+import { conversations } from '@/drizzle/schema/conversations';
+import { messages } from '@/drizzle/schema/messages';
+import { providerAccounts } from '@/drizzle/schema/provider_acounts';
+import { eq, and } from 'drizzle-orm';
+import { StatusCodes } from 'http-status-codes';
 
 // ────────────────────────────────────────────────────────────────
 // HTML → Plain Text helper
@@ -34,8 +34,12 @@ function htmlToPlainText(html: string): string {
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"');
   // Decode all numeric entities: &#8202; &#39; &#x27; etc.
-  text = text.replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCharCode(parseInt(hex, 16)));
-  text = text.replace(/&#(\d+);/g, (_, dec) => String.fromCharCode(Number(dec)));
+  text = text.replace(/&#x([0-9a-f]+);/gi, (_, hex) =>
+    String.fromCharCode(parseInt(hex, 16)),
+  );
+  text = text.replace(/&#(\d+);/g, (_, dec) =>
+    String.fromCharCode(Number(dec)),
+  );
   // Collapse 2+ consecutive newlines into a single newline
   text = text.replace(/\n{2,}/g, '\n');
   // Remove blank lines that are just whitespace
@@ -88,12 +92,14 @@ interface IngestResult {
 // Outlook (Microsoft Graph) ingestion
 // ────────────────────────────────────────────────────────────────
 
-async function fetchOutlookMessages(accessToken: string): Promise<OutlookMessage[]> {
+async function fetchOutlookMessages(
+  accessToken: string,
+): Promise<OutlookMessage[]> {
   const response = await fetch(
-    "https://graph.microsoft.com/v1.0/me/messages?$top=25&$orderby=receivedDateTime desc&$select=id,subject,bodyPreview,body,from,toRecipients,receivedDateTime,isRead",
+    'https://graph.microsoft.com/v1.0/me/messages?$top=25&$orderby=receivedDateTime desc&$select=id,subject,bodyPreview,body,from,toRecipients,receivedDateTime,isRead',
     {
       headers: { Authorization: `Bearer ${accessToken}` },
-    }
+    },
   );
 
   if (!response.ok) {
@@ -107,7 +113,7 @@ async function fetchOutlookMessages(accessToken: string): Promise<OutlookMessage
 
 async function ingestOutlookMessages(
   outlookMessages: OutlookMessage[],
-  organizationId: number
+  organizationId: number,
 ): Promise<IngestResult> {
   let conversationsCreated = 0;
   let messagesCreated = 0;
@@ -127,8 +133,8 @@ async function ingestOutlookMessages(
           and(
             eq(conversations.organizationId, organizationId),
             eq(conversations.contactIdentifier, contactEmail),
-            eq(conversations.channel, "email")
-          )
+            eq(conversations.channel, 'email'),
+          ),
         )
         .limit(1);
 
@@ -141,7 +147,7 @@ async function ingestOutlookMessages(
           .insert(conversations)
           .values({
             organizationId,
-            channel: "email",
+            channel: 'email',
             contactIdentifier: contactEmail,
             contactName,
             subject,
@@ -163,10 +169,10 @@ async function ingestOutlookMessages(
       // Insert the message
       await db.insert(messages).values({
         conversationId,
-        senderType: "customer",
+        senderType: 'customer',
         senderId: null,
-        channel: "email",
-        direction: "inbound",
+        channel: 'email',
+        direction: 'inbound',
         body: htmlToPlainText(msg.body.content || msg.bodyPreview),
         metadata: {
           isRead: msg.isRead,
@@ -199,8 +205,8 @@ async function ingestOutlookMessages(
 async function fetchGmailMessages(accessToken: string): Promise<GmailThread[]> {
   // Step 1: list recent threads
   const listRes = await fetch(
-    "https://gmail.googleapis.com/gmail/v1/users/me/threads?maxResults=25",
-    { headers: { Authorization: `Bearer ${accessToken}` } }
+    'https://gmail.googleapis.com/gmail/v1/users/me/threads?maxResults=25',
+    { headers: { Authorization: `Bearer ${accessToken}` } },
   );
 
   if (!listRes.ok) {
@@ -210,7 +216,7 @@ async function fetchGmailMessages(accessToken: string): Promise<GmailThread[]> {
 
   const listData = await listRes.json();
   const threadIds: string[] = (listData.threads || []).map(
-    (t: { id: string }) => t.id
+    (t: { id: string }) => t.id,
   );
 
   // Step 2: fetch each thread's messages
@@ -218,7 +224,7 @@ async function fetchGmailMessages(accessToken: string): Promise<GmailThread[]> {
   for (const threadId of threadIds.slice(0, 25)) {
     const threadRes = await fetch(
       `https://gmail.googleapis.com/gmail/v1/users/me/threads/${threadId}?format=full`,
-      { headers: { Authorization: `Bearer ${accessToken}` } }
+      { headers: { Authorization: `Bearer ${accessToken}` } },
     );
     if (threadRes.ok) {
       threads.push(await threadRes.json());
@@ -229,21 +235,21 @@ async function fetchGmailMessages(accessToken: string): Promise<GmailThread[]> {
 }
 
 function decodeBase64Url(data: string): string {
-  const base64 = data.replace(/-/g, "+").replace(/_/g, "/");
-  return Buffer.from(base64, "base64").toString("utf-8");
+  const base64 = data.replace(/-/g, '+').replace(/_/g, '/');
+  return Buffer.from(base64, 'base64').toString('utf-8');
 }
 
 function extractGmailBody(message: GmailMessage): string {
   // Try parts first (multipart messages)
   if (message.payload.parts) {
     const textPart = message.payload.parts.find(
-      (p) => p.mimeType === "text/plain"
+      (p) => p.mimeType === 'text/plain',
     );
     if (textPart?.body?.data) {
       return decodeBase64Url(textPart.body.data);
     }
     const htmlPart = message.payload.parts.find(
-      (p) => p.mimeType === "text/html"
+      (p) => p.mimeType === 'text/html',
     );
     if (htmlPart?.body?.data) {
       return decodeBase64Url(htmlPart.body.data);
@@ -253,19 +259,19 @@ function extractGmailBody(message: GmailMessage): string {
   if (message.payload.body?.data) {
     return decodeBase64Url(message.payload.body.data);
   }
-  return "";
+  return '';
 }
 
 function getGmailHeader(message: GmailMessage, name: string): string {
   const header = message.payload.headers.find(
-    (h) => h.name.toLowerCase() === name.toLowerCase()
+    (h) => h.name.toLowerCase() === name.toLowerCase(),
   );
-  return header?.value || "";
+  return header?.value || '';
 }
 
 async function ingestGmailThreads(
   threads: GmailThread[],
-  organizationId: number
+  organizationId: number,
 ): Promise<IngestResult> {
   let conversationsCreated = 0;
   let messagesCreated = 0;
@@ -276,13 +282,13 @@ async function ingestGmailThreads(
       if (!thread.messages || thread.messages.length === 0) continue;
 
       const firstMsg = thread.messages[0];
-      const from = getGmailHeader(firstMsg, "From");
-      const subject = getGmailHeader(firstMsg, "Subject");
+      const from = getGmailHeader(firstMsg, 'From');
+      const subject = getGmailHeader(firstMsg, 'Subject');
 
       // Parse email from "Name <email>" format
       const emailMatch = from.match(/<(.+?)>/);
       const contactEmail = emailMatch ? emailMatch[1] : from;
-      const contactName = emailMatch ? from.replace(/<.+?>/, "").trim() : from;
+      const contactName = emailMatch ? from.replace(/<.+?>/, '').trim() : from;
 
       // Find or create conversation
       const existing = await db
@@ -292,8 +298,8 @@ async function ingestGmailThreads(
           and(
             eq(conversations.organizationId, organizationId),
             eq(conversations.contactIdentifier, contactEmail),
-            eq(conversations.channel, "email")
-          )
+            eq(conversations.channel, 'email'),
+          ),
         )
         .limit(1);
 
@@ -306,7 +312,7 @@ async function ingestGmailThreads(
           .insert(conversations)
           .values({
             organizationId,
-            channel: "email",
+            channel: 'email',
             contactIdentifier: contactEmail,
             contactName,
             subject,
@@ -328,19 +334,19 @@ async function ingestGmailThreads(
         if (existingMsg.length > 0) continue;
 
         const body = htmlToPlainText(extractGmailBody(gmailMsg));
-        const msgFrom = getGmailHeader(gmailMsg, "From");
+        const msgFrom = getGmailHeader(gmailMsg, 'From');
 
         await db.insert(messages).values({
           conversationId,
-          senderType: "customer",
+          senderType: 'customer',
           senderId: null,
-          channel: "email",
-          direction: "inbound",
+          channel: 'email',
+          direction: 'inbound',
           body,
           metadata: {
             from: msgFrom,
-            to: getGmailHeader(gmailMsg, "To"),
-            date: getGmailHeader(gmailMsg, "Date"),
+            to: getGmailHeader(gmailMsg, 'To'),
+            date: getGmailHeader(gmailMsg, 'Date'),
           },
           externalId: gmailMsg.id,
           createdAt: new Date(Number(gmailMsg.internalDate)),
@@ -383,21 +389,24 @@ async function postHandler(request: RequestWithUser) {
 
     if (!organizationId || !provider || !accessToken) {
       return NextResponse.json(
-        { error: "organizationId, provider, and accessToken are required" },
-        { status: StatusCodes.BAD_REQUEST }
+        { error: 'organizationId, provider, and accessToken are required' },
+        { status: StatusCodes.BAD_REQUEST },
       );
     }
 
     let result: IngestResult;
 
     switch (provider) {
-      case "outlook": {
+      case 'outlook': {
         const outlookMessages = await fetchOutlookMessages(accessToken);
-        result = await ingestOutlookMessages(outlookMessages, Number(organizationId));
+        result = await ingestOutlookMessages(
+          outlookMessages,
+          Number(organizationId),
+        );
         break;
       }
 
-      case "google": {
+      case 'google': {
         const gmailThreads = await fetchGmailMessages(accessToken);
         result = await ingestGmailThreads(gmailThreads, Number(organizationId));
         break;
@@ -405,8 +414,10 @@ async function postHandler(request: RequestWithUser) {
 
       default:
         return NextResponse.json(
-          { error: `Unsupported provider: ${provider}. Use "outlook" or "google".` },
-          { status: StatusCodes.BAD_REQUEST }
+          {
+            error: `Unsupported provider: ${provider}. Use "outlook" or "google".`,
+          },
+          { status: StatusCodes.BAD_REQUEST },
         );
     }
 
@@ -418,10 +429,10 @@ async function postHandler(request: RequestWithUser) {
       errors: result.errors,
     });
   } catch (error) {
-    console.error("Error during message ingestion:", error);
+    console.error('Error during message ingestion:', error);
     return NextResponse.json(
-      { error: "Failed to ingest messages", details: (error as Error).message },
-      { status: StatusCodes.INTERNAL_SERVER_ERROR }
+      { error: 'Failed to ingest messages', details: (error as Error).message },
+      { status: StatusCodes.INTERNAL_SERVER_ERROR },
     );
   }
 }

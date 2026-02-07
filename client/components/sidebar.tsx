@@ -62,9 +62,7 @@ export function Sidebar({
       <div className="p-6 border-b border-sidebar-border">
         <div className="flex items-center gap-2 mb-1">
           <div className="w-8 h-8 rounded bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-sm">
-              B
-            </span>
+            <span className="text-primary-foreground font-bold text-sm">B</span>
           </div>
           <h1 className="text-lg font-bold text-sidebar-foreground">Babble</h1>
         </div>
@@ -118,7 +116,7 @@ export function Sidebar({
             'w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left',
             activeChannel === null
               ? 'bg-sidebar-primary/15 text-sidebar-primary border border-sidebar-primary/30'
-              : 'text-sidebar-foreground hover:bg-sidebar-accent/5'
+              : 'text-sidebar-foreground hover:bg-sidebar-accent/5',
           )}
         >
           <div
@@ -126,7 +124,7 @@ export function Sidebar({
               'text-lg',
               activeChannel === null
                 ? 'text-sidebar-primary'
-                : 'text-muted-foreground'
+                : 'text-muted-foreground',
             )}
           >
             <Inbox className="w-5 h-5" />
@@ -144,13 +142,13 @@ export function Sidebar({
                 'w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left',
                 isActive
                   ? 'bg-sidebar-primary/15 text-sidebar-primary border border-sidebar-primary/30'
-                  : 'text-sidebar-foreground hover:bg-sidebar-accent/5'
+                  : 'text-sidebar-foreground hover:bg-sidebar-accent/5',
               )}
             >
               <div
                 className={cn(
                   'text-lg',
-                  isActive ? 'text-sidebar-primary' : 'text-muted-foreground'
+                  isActive ? 'text-sidebar-primary' : 'text-muted-foreground',
                 )}
               >
                 {channel.icon}

@@ -92,7 +92,8 @@ export function ConversationInsights({
 
   if (!insights) return null;
 
-  const sentiment = SENTIMENT_CONFIG[insights.sentiment] || SENTIMENT_CONFIG.neutral;
+  const sentiment =
+    SENTIMENT_CONFIG[insights.sentiment] || SENTIMENT_CONFIG.neutral;
 
   return (
     <div className="border-b border-border bg-linear-to-r from-purple-500/5 via-transparent to-blue-500/5">
@@ -106,7 +107,7 @@ export function ConversationInsights({
           <div
             className={cn(
               'flex items-center gap-1 px-2 py-0.5 rounded-full border text-[10px] font-medium shrink-0',
-              sentiment.className
+              sentiment.className,
             )}
           >
             {sentiment.icon}
@@ -181,7 +182,8 @@ export function ConversationInsights({
                     <span
                       className={cn(
                         'text-[10px] px-1.5 py-0.5 rounded font-medium shrink-0 mt-0.5',
-                        PRIORITY_COLORS[step.priority] || PRIORITY_COLORS.medium
+                        PRIORITY_COLORS[step.priority] ||
+                          PRIORITY_COLORS.medium,
                       )}
                     >
                       {step.priority}

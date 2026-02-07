@@ -12,7 +12,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useState, useMemo } from 'react';
-import type { ConversationItem, MessageItem, ConversationInsightsData } from '@/lib/types/inbox';
+import type {
+  ConversationItem,
+  MessageItem,
+  ConversationInsightsData,
+} from '@/lib/types/inbox';
 import { ConversationInsights } from '@/components/conversation-insights';
 
 interface ConversationViewProps {
@@ -71,7 +75,9 @@ function stripHtml(text: string): string {
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"');
   // Decode all numeric entities: &#8202; &#39; &#x27; etc.
-  t = t.replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCharCode(parseInt(hex, 16)));
+  t = t.replace(/&#x([0-9a-f]+);/gi, (_, hex) =>
+    String.fromCharCode(parseInt(hex, 16)),
+  );
   t = t.replace(/&#(\d+);/g, (_, dec) => String.fromCharCode(Number(dec)));
   // Collapse multiple newlines to one, remove blank lines
   t = t.replace(/\n{2,}/g, '\n');
@@ -235,7 +241,7 @@ export function ConversationView({
                   'w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-semibold',
                   isOwn
                     ? 'bg-primary/20 text-primary'
-                    : 'bg-secondary/60 text-foreground'
+                    : 'bg-secondary/60 text-foreground',
                 )}
               >
                 {initials}
@@ -264,7 +270,7 @@ export function ConversationView({
                     'rounded-lg px-4 py-2 max-w-md text-sm whitespace-pre-wrap break-words overflow-hidden',
                     isOwn
                       ? 'bg-primary text-primary-foreground'
-                      : 'bg-secondary text-foreground'
+                      : 'bg-secondary text-foreground',
                   )}
                 >
                   {stripHtml(message.body)}

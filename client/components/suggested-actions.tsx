@@ -47,7 +47,12 @@ export function SuggestedActions({
           <h4 className="text-xs font-semibold text-foreground uppercase tracking-wide">
             Suggested Actions
           </h4>
-          <Button variant="ghost" size="icon" onClick={onClose} className="h-6 w-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="h-6 w-6"
+          >
             <X className="w-3.5 h-3.5" />
           </Button>
         </div>
@@ -69,7 +74,12 @@ export function SuggestedActions({
         <h4 className="text-xs font-semibold text-foreground uppercase tracking-wide">
           Suggested Actions
         </h4>
-        <Button variant="ghost" size="icon" onClick={onClose} className="h-6 w-6">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onClose}
+          className="h-6 w-6"
+        >
           <X className="w-3.5 h-3.5" />
         </Button>
       </div>
@@ -83,7 +93,9 @@ export function SuggestedActions({
             <div className="flex items-start gap-3">
               {/* Icon */}
               <div className="mt-0.5 text-muted-foreground group-hover:text-foreground transition-colors">
-                {ACTION_ICONS[action.type] || <ChevronRight className="w-3.5 h-3.5" />}
+                {ACTION_ICONS[action.type] || (
+                  <ChevronRight className="w-3.5 h-3.5" />
+                )}
               </div>
 
               {/* Content */}
@@ -95,7 +107,8 @@ export function SuggestedActions({
                   <span
                     className={cn(
                       'text-[10px] px-1.5 py-0.5 rounded font-medium',
-                      PRIORITY_COLORS[action.priority] || PRIORITY_COLORS.medium
+                      PRIORITY_COLORS[action.priority] ||
+                        PRIORITY_COLORS.medium,
                     )}
                   >
                     {action.priority}

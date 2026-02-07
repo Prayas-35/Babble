@@ -50,7 +50,7 @@ export default function DashboardPage() {
   // ── AI Summary panel ────────────────────────────────────────
   const [summary, setSummary] = useState<InboxSummary | null>(null);
   const [suggestedActions, setSuggestedActions] = useState<SuggestedAction[]>(
-    []
+    [],
   );
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
@@ -67,7 +67,9 @@ export default function DashboardPage() {
   const [aiSuggesting, setAiSuggesting] = useState(false);
 
   // ── Conversation Insights (per-conversation summary + next steps)
-  const [insights, setInsights] = useState<ConversationInsightsData | null>(null);
+  const [insights, setInsights] = useState<ConversationInsightsData | null>(
+    null,
+  );
   const [insightsLoading, setInsightsLoading] = useState(false);
 
   const authHeaders = useCallback(() => {
@@ -118,10 +120,11 @@ export default function DashboardPage() {
       });
       if (res.ok) {
         const data = await res.json();
-        const total = (data.conversationsCreated || 0) + (data.messagesCreated || 0);
+        const total =
+          (data.conversationsCreated || 0) + (data.messagesCreated || 0);
         if (total > 0) {
           setSyncStatus(
-            `Synced ${data.messagesCreated} message(s) across ${data.conversationsCreated} new conversation(s)`
+            `Synced ${data.messagesCreated} message(s) across ${data.conversationsCreated} new conversation(s)`,
           );
         } else {
           setSyncStatus('Inbox is up to date');
@@ -167,7 +170,7 @@ export default function DashboardPage() {
       try {
         const res = await fetch(
           `/api/inbox/messages?conversationId=${conversationId}`,
-          { headers: authHeaders() }
+          { headers: authHeaders() },
         );
         if (res.ok) {
           const data = await res.json();
@@ -179,7 +182,7 @@ export default function DashboardPage() {
         setMessagesLoading(false);
       }
     },
-    [authHeaders]
+    [authHeaders],
   );
 
   // ── Send a message ──────────────────────────────────────────
@@ -205,7 +208,7 @@ export default function DashboardPage() {
         console.error('Failed to send message:', err);
       }
     },
-    [selectedConversation, authHeaders, fetchMessages]
+    [selectedConversation, authHeaders, fetchMessages],
   );
 
   // ── AI: Analyze inbox (summary + actions) ───────────────────
@@ -302,19 +305,16 @@ export default function DashboardPage() {
         setInsightsLoading(false);
       }
     },
-    [selectedConversation, authHeaders]
+    [selectedConversation, authHeaders],
   );
 
   // ── Handle action execution ─────────────────────────────────
-  const handleExecuteAction = useCallback(
-    (action: SuggestedAction) => {
-      console.log('Executing action:', action);
-      alert(
-        `Action: ${action.title}\nType: ${action.type}\nDescription: ${action.description}\n\n(Execution will be wired in the next phase)`
-      );
-    },
-    []
-  );
+  const handleExecuteAction = useCallback((action: SuggestedAction) => {
+    console.log('Executing action:', action);
+    alert(
+      `Action: ${action.title}\nType: ${action.type}\nDescription: ${action.description}\n\n(Execution will be wired in the next phase)`,
+    );
+  }, []);
 
   // ── Select a conversation ───────────────────────────────────
   const handleSelectConversation = useCallback(
@@ -327,7 +327,7 @@ export default function DashboardPage() {
       // Auto-generate insights for the selected conversation
       fetchInsights(conv.id);
     },
-    [fetchMessages, fetchInsights]
+    [fetchMessages, fetchInsights],
   );
 
   // ── Handle channel switch ───────────────────────────────────
@@ -355,9 +355,7 @@ export default function DashboardPage() {
     if (user && tokens && !hasSynced.current) {
       hasSynced.current = true;
       // Ensure org, sync emails, then fetch conversations
-      ensureOrg().then(() =>
-        syncEmails().then(() => fetchConversations())
-      );
+      ensureOrg().then(() => syncEmails().then(() => fetchConversations()));
     }
   }, [user, tokens, ensureOrg, syncEmails, fetchConversations]);
 

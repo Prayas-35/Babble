@@ -102,17 +102,15 @@ export default function Home() {
 
           <p className="mt-6 text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
             Babble brings your emails, chats, and messages into one intelligent
-            inbox — with AI summaries, smart actions, and real-time collaboration
-            built in.
+            inbox — with AI summaries, smart actions, and real-time
+            collaboration built in.
           </p>
 
           {/* Auth error display */}
           {(error || urlError) && (
             <div className="mt-6 mx-auto max-w-md flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
               <AlertCircle className="h-4 w-4 shrink-0" />
-              <p>
-                {error || 'Authentication failed. Please try again.'}
-              </p>
+              <p>{error || 'Authentication failed. Please try again.'}</p>
             </div>
           )}
 
@@ -128,7 +126,11 @@ export default function Home() {
                 {loading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  <svg viewBox="0 0 21 21" className="h-5 w-5" fill="currentColor">
+                  <svg
+                    viewBox="0 0 21 21"
+                    className="h-5 w-5"
+                    fill="currentColor"
+                  >
                     <path d="M0 0h10v10H0z" opacity=".8" />
                     <path d="M11 0h10v10H11z" opacity=".6" />
                     <path d="M0 11h10v10H0z" opacity=".6" />
@@ -268,7 +270,9 @@ export default function Home() {
             <div className="flex h-6 w-6 items-center justify-center rounded-md bg-purple-600">
               <MessageSquare className="h-3 w-3 text-white" />
             </div>
-            <span className="text-sm font-semibold text-foreground">Babble</span>
+            <span className="text-sm font-semibold text-foreground">
+              Babble
+            </span>
           </div>
           <div className="flex items-center gap-1 text-xs text-muted-foreground">
             <Shield className="h-3 w-3" />

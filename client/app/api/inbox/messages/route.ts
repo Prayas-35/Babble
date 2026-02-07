@@ -1,12 +1,12 @@
-"use server";
+'use server';
 
-import { NextResponse } from "next/server";
-import { withAuth, RequestWithUser } from "@/lib/middleware/auth.middleware";
-import { db } from "@/drizzle/index";
-import { messages } from "@/drizzle/schema/messages";
-import { conversations } from "@/drizzle/schema/conversations";
-import { eq, asc } from "drizzle-orm";
-import { StatusCodes } from "http-status-codes";
+import { NextResponse } from 'next/server';
+import { withAuth, RequestWithUser } from '@/lib/middleware/auth.middleware';
+import { db } from '@/drizzle/index';
+import { messages } from '@/drizzle/schema/messages';
+import { conversations } from '@/drizzle/schema/conversations';
+import { eq, asc } from 'drizzle-orm';
+import { StatusCodes } from 'http-status-codes';
 
 /**
  * GET /api/inbox/messages
@@ -21,12 +21,12 @@ async function getHandler(request: RequestWithUser) {
 
   try {
     const { searchParams } = new URL(request.url);
-    const conversationId = searchParams.get("conversationId");
+    const conversationId = searchParams.get('conversationId');
 
     if (!conversationId) {
       return NextResponse.json(
-        { error: "conversationId is required" },
-        { status: StatusCodes.BAD_REQUEST }
+        { error: 'conversationId is required' },
+        { status: StatusCodes.BAD_REQUEST },
       );
     }
 
@@ -38,10 +38,10 @@ async function getHandler(request: RequestWithUser) {
 
     return NextResponse.json({ messages: results });
   } catch (error) {
-    console.error("Error fetching messages:", error);
+    console.error('Error fetching messages:', error);
     return NextResponse.json(
-      { error: "Failed to fetch messages" },
-      { status: StatusCodes.INTERNAL_SERVER_ERROR }
+      { error: 'Failed to fetch messages' },
+      { status: StatusCodes.INTERNAL_SERVER_ERROR },
     );
   }
 }
@@ -79,30 +79,42 @@ async function postHandler(request: RequestWithUser) {
 
     if (!conversationId || !body || !channel || !direction || !senderType) {
       return NextResponse.json(
-        { error: "conversationId, body, channel, direction, and senderType are required" },
-        { status: StatusCodes.BAD_REQUEST }
+        {
+          error:
+            'conversationId, body, channel, direction, and senderType are required',
+        },
+        { status: StatusCodes.BAD_REQUEST },
       );
     }
 
-    const validChannels = ["email", "sms", "whatsapp", "slack", "web_chat", "internal_note"];
+    const validChannels = [
+      'email',
+      'sms',
+      'whatsapp',
+      'slack',
+      'web_chat',
+      'internal_note',
+    ];
     if (!validChannels.includes(channel)) {
       return NextResponse.json(
-        { error: `Invalid channel. Must be one of: ${validChannels.join(", ")}` },
-        { status: StatusCodes.BAD_REQUEST }
+        {
+          error: `Invalid channel. Must be one of: ${validChannels.join(', ')}`,
+        },
+        { status: StatusCodes.BAD_REQUEST },
       );
     }
 
-    if (!["inbound", "outbound"].includes(direction)) {
+    if (!['inbound', 'outbound'].includes(direction)) {
       return NextResponse.json(
-        { error: "direction must be inbound or outbound" },
-        { status: StatusCodes.BAD_REQUEST }
+        { error: 'direction must be inbound or outbound' },
+        { status: StatusCodes.BAD_REQUEST },
       );
     }
 
-    if (!["customer", "agent", "system", "bot"].includes(senderType)) {
+    if (!['customer', 'agent', 'system', 'bot'].includes(senderType)) {
       return NextResponse.json(
-        { error: "senderType must be customer, agent, system, or bot" },
-        { status: StatusCodes.BAD_REQUEST }
+        { error: 'senderType must be customer, agent, system, or bot' },
+        { status: StatusCodes.BAD_REQUEST },
       );
     }
 
@@ -129,13 +141,13 @@ async function postHandler(request: RequestWithUser) {
 
     return NextResponse.json(
       { message: newMessage[0] },
-      { status: StatusCodes.CREATED }
+      { status: StatusCodes.CREATED },
     );
   } catch (error) {
-    console.error("Error creating message:", error);
+    console.error('Error creating message:', error);
     return NextResponse.json(
-      { error: "Failed to create message" },
-      { status: StatusCodes.INTERNAL_SERVER_ERROR }
+      { error: 'Failed to create message' },
+      { status: StatusCodes.INTERNAL_SERVER_ERROR },
     );
   }
 }

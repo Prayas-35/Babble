@@ -33,7 +33,12 @@ export function LiveSnapshot({
           <h4 className="text-xs font-semibold text-purple-400 uppercase tracking-wide">
             Live Snapshot
           </h4>
-          <Button variant="ghost" size="icon" onClick={onClose} className="h-6 w-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="h-6 w-6"
+          >
             <X className="w-3.5 h-3.5" />
           </Button>
         </div>
@@ -65,7 +70,12 @@ export function LiveSnapshot({
           >
             Refresh
           </Button>
-          <Button variant="ghost" size="icon" onClick={onClose} className="h-6 w-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="h-6 w-6"
+          >
             <X className="w-3.5 h-3.5" />
           </Button>
         </div>
@@ -151,8 +161,10 @@ export function LiveSnapshot({
               <ul className="space-y-0.5">
                 {snapshot.participantSummary.map((p, i) => (
                   <li key={i} className="text-xs text-muted-foreground">
-                    <span className="text-foreground font-medium">{p.name}</span>:{' '}
-                    {p.lastAction}
+                    <span className="text-foreground font-medium">
+                      {p.name}
+                    </span>
+                    : {p.lastAction}
                   </li>
                 ))}
               </ul>
