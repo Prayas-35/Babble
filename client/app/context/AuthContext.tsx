@@ -135,7 +135,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             provider,
             options: {
                 scopes,
-                redirectTo: typeof window !== "undefined" ? "/outlook" : undefined,
+                redirectTo:
+                    typeof window !== "undefined"
+                        ? `${window.location.origin}/auth/callback`
+                        : undefined,
             },
         });
 
@@ -152,6 +155,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setAuthError(null);
 
         const { error } = await supabaseClient.auth.signOut();
+
+        // Clear provider cookies set during auth callback
+        if (typeof document !== "undefined") {
+            document.cookie = "provider_token=; path=/; max-age=0";
+            document.cookie = "provider_refresh_token=; path=/; max-age=0";
+            document.cookie = "auth_provider=; path=/; max-age=0";
+        }
 
         if (error) {
             setAuthError(error.message);
@@ -178,13 +188,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const tokens = useMemo<StoredTokens | null>(() => {
         if (!session) return null;
-        return {    
+
+        // Supabase only exposes provider_token during the initial OAuth exchange.
+        // After the server-side callback redirect, session.provider_token is null.
+        // We fall back to cookies that were set in /auth/callback/route.ts.
+        let providerToken = session.provider_token ?? null;
+        let providerRefreshToken = session.provider_refresh_token ?? null;
+        let provider: string | null = session.user?.app_metadata?.provider ?? null;
+
+        if (typeof document !== "undefined" && !providerToken) {
+            const jar = Object.fromEntries(
+                document.cookie.split(";").map((c) => {
+                    const [k, ...v] = c.trim().split("=");
+                    return [k, v.join("=")];
+                })
+            );
+            providerToken = jar["provider_token"] || null;
+            providerRefreshToken = providerRefreshToken || jar["provider_refresh_token"] || null;
+            provider = provider || jar["auth_provider"] || null;
+        }
+
+        return {
             accessToken: session.access_token,
-            provider_token: session.provider_token as string,
+            provider_token: providerToken as string,
             refreshToken: session.refresh_token,
-            provider_refresh_token: session.provider_refresh_token ?? null,
+            provider_refresh_token: providerRefreshToken,
             expiresAt: session.expires_at ?? null,
-            provider: session.user?.app_metadata?.provider ?? null,
+            provider,
         };
     }, [session]);
 

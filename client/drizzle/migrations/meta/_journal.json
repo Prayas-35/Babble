@@ -29,6 +29,20 @@
       "when": 1768859668251,
       "tag": "0003_fixed_random",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1770450037563,
+      "tag": "0004_needy_apocalypse",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1770451522007,
+      "tag": "0005_striped_mister_fear",
+      "breakpoints": true
     }
   ]
 }
